@@ -1,0 +1,35 @@
+.App{
+    max-width: 1400px;
+    margin: auto;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+thead th{
+    font-weight:bold !important;
+}
+tbody{
+    min-height: 500px;
+}
+
+.inputs div{
+    display: inline-block;
+}
+.inputs div:nth-child(2){
+    margin-left:2%;
+}
+.MuiAutocomplete-inputRoot .MuiAutocomplete-input{
+    width: 100% !important;
+}
+.loader-table .MuiCircularProgress-root{
+    position: relative;
+    left: 150%;
+} 
+.loader-chart .MuiCircularProgress-root{
+    position: relative;
+    left: 45%;
+    top: 400px;
+}
+.MuiCircularProgress-colorPrimary{
+    color: rgba(0, 0, 255, 0.6) !important;
+}
+
