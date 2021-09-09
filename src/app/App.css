@@ -33,3 +33,15 @@ tbody{
     color: rgba(0, 0, 255, 0.6) !important;
 }
 
+//Mobile
+@media only screen and (max-width: 600px) {
+    .App{
+      max-width: 90%;
+    }
+    .inputs div{
+        display: block;
+        width: 90%;
+        margin: auto;
+        margin-botton: 5%;
+    }
+  }

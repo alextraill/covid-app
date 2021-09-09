@@ -1,25 +1,29 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+
 import { updateTimeFrame } from './timeFrameSlice'
+
 import {Select, FormControl, InputLabel, MenuItem} from '@material-ui/core';
 
 export function TimeFrame() {
-  const timeFrame = useSelector(state => state.timeFrame.value)
-  const dispatch = useDispatch()
+    const timeFrame = useSelector(state => state.timeFrame.value)
+    const dispatch = useDispatch()
 
-  function handleTimeFrame(event) {
-    let updatedTimeFrame = {
-        text: event.target.value,
-        amountDays: event.currentTarget.dataset.amount
-    };
-    dispatch(updateTimeFrame(updatedTimeFrame))
-  };
+    //Updates global state TimeFrame
+    function handleTimeFrame(event) {
+        let updatedTimeFrame = {
+            text: event.target.value,
+            amountDays: event.currentTarget.dataset.amount
+        };
+        dispatch(updateTimeFrame(updatedTimeFrame))
+    }
 
-  function getAllTime(){
-    const startDate  = '2020-01-01';
-    const diffInMs   = new Date() - new Date(startDate)
-    const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
-    return diffInDays
+    //Calculates the amount of days that have passed between when the pandemic began (Jan 2020) and today
+    function getAllTime(){
+        const startDate  = '2020-01-01';
+        const diffInMs   = new Date() - new Date(startDate)
+        const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+        return diffInDays
     }
 
   return (

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { useSelector } from 'react-redux'
+
 import { Table, TableContainer, TableBody, TableCell, TableHead, TableRow, Paper, CircularProgress } from '@material-ui/core'
 
 export function DrillDownTable() {
@@ -8,26 +9,27 @@ export function DrillDownTable() {
     const [isLoading, setIsLoading] = useState(false);
     const drillDown = useSelector(state => state.drillDownTable.value)
 
-  function createData(state, confirmed, deaths) {
-    return { state, confirmed, deaths };
-  }
+    function createData(state, confirmed, deaths) {
+        return { state, confirmed, deaths };
+    }
 
-  async function fetchStateData() {
-            setIsLoading(true);
-            const response = await axios.get('https://covid-api.com/api/reports?iso=USA&date='+ drillDown.date); 
-            let responseArray=response.data.data;
-            responseArray.sort(function(a, b){
-                if(a.region.province < b.region.province) { return -1; }
-                if(a.region.province > b.region.province) { return 1; }
-                return 0;
-            })
-            for (let i = 0; i < responseArray.length; i++) {
-                setRows(prevState => (
-                    [...prevState, createData(responseArray[i].region.province, responseArray[i].confirmed, responseArray[i].deaths)] 
-                ))  
-            }  
-            setIsLoading(false);
-    };
+    //Retrieves #of confirmed cases and #of deaths for each state for a particular date and updates state Rows
+    async function fetchStateData() {
+        setIsLoading(true);
+        const response = await axios.get('https://covid-api.com/api/reports?iso=USA&date='+ drillDown.date); 
+        let responseArray=response.data.data;
+        responseArray.sort(function(a, b){
+            if(a.region.province < b.region.province) { return -1; }
+            if(a.region.province > b.region.province) { return 1; }
+            return 0;
+        })
+        for (let i = 0; i < responseArray.length; i++) {
+            setRows(prevState => (
+                [...prevState, createData(responseArray[i].region.province, responseArray[i].confirmed, responseArray[i].deaths)] 
+            ))  
+        }  
+        setIsLoading(false);
+    }
 
     useEffect(() => {
         setRows([]);

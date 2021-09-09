@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux'
+
 import { addToStatesList, updateSelectedState } from './statesDropdownSlice'
+
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { TextField } from '@material-ui/core';
 
@@ -11,7 +13,8 @@ export function StatesDropdown() {
     const states = useSelector(state => state.statesDropdown.value.states)
     const dispatch = useDispatch()
 
-  async function fetchStates() {
+    //Retrieves list of states in alphabetical order and adds them to global state StateList
+    async function fetchStates() {
         const response = await axios.get('https://covid-api.com/api/reports?iso=USA&date=2021-09-07'); 
         let responseArray=response.data.data;
         responseArray.sort(function(a, b){
@@ -24,7 +27,7 @@ export function StatesDropdown() {
             statesList.push(responseArray[i].region.province)
         }  
         dispatch(addToStatesList(statesList))
-    };
+    }
 
     useEffect(() => {
         fetchStates();
@@ -32,17 +35,17 @@ export function StatesDropdown() {
 
   return (
     <div>
-      <Autocomplete
-        value={value}
-        onChange={(event, newValue) => {
-          setValue(newValue);
-          dispatch(updateSelectedState(newValue))
-        }}
-        id="controllable-states-demo"
-        options={states}
-        style={{ width: 300 }}
-        renderInput={(params) => <TextField {...params} label="US States" variant="outlined" />}
-      />
+        <Autocomplete
+            value={value}
+            onChange={(event, newValue) => {
+                setValue(newValue);
+                dispatch(updateSelectedState(newValue))
+            }}
+            id="controllable-states-demo"
+            options={states}
+            style={{ width: 300 }}
+            renderInput={(params) => <TextField {...params} label="US States" variant="outlined" />}
+        />
     </div>
   )
 }

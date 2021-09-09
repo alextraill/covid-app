@@ -13,7 +13,6 @@ export const statesDropdownSlice = createSlice({
         state.value.states = action.payload
     },
     updateSelectedState: (state, action) => {
-        console.log(action)
         state.value.selectedState = action.payload
     },
   }
