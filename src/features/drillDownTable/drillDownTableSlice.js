@@ -1,10 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+const yesterday = new Date()
+yesterday.setDate(yesterday.getDate() - 1);
+
 export const drillDownTableSlice = createSlice({
   name: 'drillDownTable',
   initialState: {
     value: {
-        date: new Date().toISOString().split('T')[0],
+        date: yesterday.toISOString().split('T')[0],
         UsStates: []
     }
   },
