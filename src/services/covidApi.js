@@ -2,7 +2,6 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
     baseURL: 'https://covid-api.com/api',
-    timeout: 7000,
   });
   axiosInstance.interceptors.response.use(response => response.data);
 
