@@ -2,7 +2,7 @@
 
 To get this project up and running locally after you clone run the following commands in the project directory: 
 
-### `npm install`
+### `yarn`
 
 This will install all the dependencies needed to run this project. 
 
