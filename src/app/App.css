@@ -1,5 +1,8 @@
+body{
+    font-family: 'Open Sans', sans-serif;
+}
 .App{
-    max-width: 1400px;
+    max-width: 90%;
     margin: auto;
     margin-top: 5%;
     margin-bottom: 5%;
@@ -10,15 +13,22 @@ thead th{
 tbody{
     min-height: 500px;
 }
+h2{
+    font-family: 'Roboto', sans-serif;
+}
 
-.inputs div{
+.inputs>div{
     display: inline-block;
+    margin-bottom: 20px;
 }
 .inputs div:nth-child(2){
     margin-left:2%;
 }
 .MuiAutocomplete-inputRoot .MuiAutocomplete-input{
     width: 100% !important;
+}
+.MuiFormControl-root{
+    width: 300px;
 }
 .loader-table .MuiCircularProgress-root{
     position: relative;
@@ -34,14 +44,21 @@ tbody{
 }
 
 //Mobile
-@media only screen and (max-width: 600px) {
+@media only screen and (min-width: 1000px) {
     .App{
-      max-width: 90%;
+      max-width: 900px;
     }
-    .inputs div{
-        display: block;
-        width: 90%;
-        margin: auto;
-        margin-botton: 5%;
+    .inputs>div{ 
+        margin-bottom: 0px;
     }
-  }
+}
+@media only screen and (min-width: 1200px) {
+    .App{
+      max-width: 1000px;
+    }
+}
+@media only screen and (min-width: 1400px) {
+    .App{
+      max-width: 1200px;
+    }
+}

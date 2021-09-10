@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux'
 
 import { addToStatesList, updateSelectedState } from './statesDropdownSlice'
 
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { TextField } from '@material-ui/core';
+import { getStateList } from '../../services/covidApi';
 
 
 export function StatesDropdown() {
@@ -15,8 +15,7 @@ export function StatesDropdown() {
 
     //Retrieves list of states in alphabetical order and adds them to global state StateList
     async function fetchStates() {
-        const response = await axios.get('https://covid-api.com/api/reports?iso=USA&date=2021-09-07'); 
-        let responseArray=response.data.data;
+        let responseArray = await getStateList()
         responseArray.sort(function(a, b){
             if(a.region.province < b.region.province) { return -1; }
             if(a.region.province > b.region.province) { return 1; }

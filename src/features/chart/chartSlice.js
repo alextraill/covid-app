@@ -11,13 +11,17 @@ export const chartSlice = createSlice({
   },
   reducers: {
     updateData: (state, action) => {
-        console.log(action)
-      state.value = action.payload
+        state.value.dates = [...state.value.dates, action.payload.date]
+        state.value.confirmed = [...state.value.confirmed, action.payload.confirmed]
+        state.value.deaths = [...state.value.deaths, action.payload.deaths]
     },
+    cleanData: (state, action) =>{
+        state.value = action.payload
+    }
   }
 })
 
 // Action creators are generated for each case reducer function
-export const { updateData } = chartSlice.actions
+export const { updateData, cleanData } = chartSlice.actions
 
 export default chartSlice.reducer

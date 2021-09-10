@@ -1,59 +1,85 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux'
 
-import { updateData } from './chartSlice'
+import { updateData, cleanData } from './chartSlice'
 import { updateDate } from '../drillDownTable/drillDownTableSlice'
 
 import { CircularProgress } from '@material-ui/core'
 import { Bar } from 'react-chartjs-2';
+import { getTotalStateData, getTotalUsaData } from '../../services/covidApi';
 
 export function Chart() {
     const dispatch = useDispatch()
-    //const [data, setData] = useState({dates:[],confirmed:[],deaths:[]});
     const [isLoading, setIsLoading] = useState(false);
     const dateRange = useSelector(state => state.timeFrame.value)
     const selectedState = useSelector(state => state.statesDropdown.value.selectedState)
     const data = useSelector(state => state.chart.value)
 
-    //Retrieves data for graph. Takes into account which timeFrame has been choosen and whether a state has been specified.
-    async function fetchData() {
-        setIsLoading(true);
-        let dates = []
-        let confirmed = []
-        let deaths = []
-        let data = []
-        let date = new Date();
-            for (let i = 0; i < dateRange.amountDays; i++) {
-                date.setDate(date.getDate() - 1);
-                if(selectedState === "none" || selectedState === null){
-                    let response = await axios.get(`https://covid-api.com/api/reports/total?iso=USA&date=${date.toISOString().split('T')[0]}`);
-                    data=response.data.data
-                }else{
-                    let response = await axios.get(`https://covid-api.com/api/reports?iso=USA&date=${date.toISOString().split('T')[0]}&region_province=${selectedState}`);
-                    data = response.data.data[0]
-                }
-                dates.unshift(data.date)
-                confirmed.unshift(data.confirmed)
-                deaths.unshift(data.deaths)
-            }   
-            dispatch(updateData({
-                dates:dates,
-                confirmed: confirmed,
-                deaths: deaths
-            }))
-        setIsLoading(false);
-    }
-  
     useEffect(() => {
-        dispatch(updateData({
+        dispatch(cleanData({
             dates:[],
             confirmed: [],
             deaths: []
         }))
         fetchData();
     }, [dateRange, selectedState]);
- 
+
+    //Retrieves data for graph. Takes into account which timeFrame has been choosen and whether a state has been specified.
+    async function fetchData() {
+        setIsLoading(true);
+        
+        let date = new Date();
+        
+        const dailyDataProms = [];
+            for (let i = 0; i < dateRange.amountDays; i++) {
+                date.setDate(date.getDate() - 1);
+                dailyDataProms.push(getDailyData(date));
+            }
+            const result = await Promise.all(dailyDataProms);
+            result.sort(function(a, b) {
+                if(a == null) return 0;
+                var dateA = new Date(a.date),
+                  dateB = new Date(b.date);
+                if (dateA < dateB) return -1;
+                if (dateA > dateB) return 1;
+                return 0;
+              });
+
+
+            for (let i = 0; i < result.length; i++) {
+                const element = result[i];
+                if(element != null)
+                {
+                    dispatch(updateData({
+                        date:element.date,
+                        confirmed: element.confirmed,
+                        deaths: element.deaths
+                    }))
+                }
+               
+                
+            }
+
+            setIsLoading(false);
+       
+    }
+
+    async function getDailyData(date ){
+        let data = null;
+        try{
+            if(selectedState === "none" || selectedState === null){
+                data = getTotalUsaData(date)
+            }else{
+                data = getTotalStateData(date, selectedState)
+            }
+        }catch(err){
+            console.error("Failing silently");
+        }
+            
+            return data;
+    }
+
+
     const chartData = {
         labels: data.dates,
         datasets:[
@@ -73,9 +99,10 @@ export function Chart() {
         plugins: {
             title: {
                 display: true,
-                text: `Covid data ${selectedState === "none" ? "USA" : selectedState}`,
+                text: `Covid data ${selectedState === "none" || selectedState === null ? "USA" : selectedState}`,
                 font: {
-                    size: 25
+                    size: 25,
+                    family:'roboto'
                 }
             },
             subtitle: {
@@ -83,7 +110,8 @@ export function Chart() {
                 display: true,
                 font: {
                     size: 12,
-                    style: 'italic'
+                    style: 'italic',
+                    family: 'Open Sans'
                   },
             }
         },

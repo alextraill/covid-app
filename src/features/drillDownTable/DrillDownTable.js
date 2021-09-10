@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios';
 import { useSelector } from 'react-redux'
 
 import { Table, TableContainer, TableBody, TableCell, TableHead, TableRow, Paper, CircularProgress } from '@material-ui/core'
+import { getDataByState } from '../../services/covidApi';
 
 export function DrillDownTable() {
     const [rows, setRows] = useState([]);
@@ -16,8 +16,7 @@ export function DrillDownTable() {
     //Retrieves #of confirmed cases and #of deaths for each state for a particular date and updates state Rows
     async function fetchStateData() {
         setIsLoading(true);
-        const response = await axios.get('https://covid-api.com/api/reports?iso=USA&date='+ drillDown.date); 
-        let responseArray=response.data.data;
+        let responseArray = await getDataByState(drillDown.date)
         responseArray.sort(function(a, b){
             if(a.region.province < b.region.province) { return -1; }
             if(a.region.province > b.region.province) { return 1; }

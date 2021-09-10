@@ -4,7 +4,7 @@ export const drillDownTableSlice = createSlice({
   name: 'drillDownTable',
   initialState: {
     value: {
-        date: "2021-09-07",
+        date: new Date().toISOString().split('T')[0],
         UsStates: []
     }
   },
