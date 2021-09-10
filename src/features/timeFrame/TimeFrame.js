@@ -20,7 +20,7 @@ export function TimeFrame() {
 
     //Calculates the amount of days that have passed between when the pandemic began (Jan 2020) and today
     function getAllTime(){
-        const startDate  = '2020-01-01';
+        const startDate  = '2020-01-22';
         const diffInMs   = new Date() - new Date(startDate)
         const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
         return diffInDays
