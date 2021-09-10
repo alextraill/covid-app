@@ -36,15 +36,7 @@ export function Chart() {
                 dailyDataProms.push(getDailyData(date));
             }
             const result = await Promise.all(dailyDataProms);
-            result.sort(function(a, b) {
-                if(a == null) return 0;
-                var dateA = new Date(a.date),
-                  dateB = new Date(b.date);
-                if (dateA < dateB) return -1;
-                if (dateA > dateB) return 1;
-                return 0;
-              });
-
+            result.reverse()
 
             for (let i = 0; i < result.length; i++) {
                 const element = result[i];
@@ -59,9 +51,7 @@ export function Chart() {
                
                 
             }
-
             setIsLoading(false);
-       
     }
 
     async function getDailyData(date ){
@@ -75,10 +65,8 @@ export function Chart() {
         }catch(err){
             console.error("Failing silently");
         }
-            
-            return data;
+        return data;
     }
-
 
     const chartData = {
         labels: data.dates,
