@@ -5,7 +5,7 @@ export const statesDropdownSlice = createSlice({
   initialState: {
     value: {
         states: [],
-        selectedState: "none"
+        selectedState: null
     }
   },
   reducers: {

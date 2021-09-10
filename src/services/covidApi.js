@@ -1,23 +1,40 @@
 import axios from 'axios';
 
+const axiosInstance = axios.create({
+    baseURL: 'https://covid-api.com/api',
+    timeout: 7000,
+  });
+  axiosInstance.interceptors.response.use(response => response.data);
+
+
 async function getDataByState(date){
-    const response =await axios.get('https://covid-api.com/api/reports?iso=USA&date='+ date); 
-    return response.data.data;
+    const { data } =await axiosInstance.get('/reports?iso=USA&date='+ date); 
+    return sortStatesByName(data);
 }
 
 async function getTotalUsaData(date){
-    let response = await axios.get(`https://covid-api.com/api/reports/total?iso=USA&date=${date.toISOString().split('T')[0]}`);
-    return response.data.data
+    const { data } = await axiosInstance.get(`/reports/total?iso=USA&date=${date.toISOString().split('T')[0]}`);
+    return data
 }
 
 async function getTotalStateData(date, state){
-    let response =  await axios.get(`https://covid-api.com/api/reports?iso=USA&date=${date.toISOString().split('T')[0]}&region_province=${state}`);
-    return response.data.data[0]
+    const { data } =  await axiosInstance.get(`/reports?iso=USA&date=${date.toISOString().split('T')[0]}&region_province=${state}`);
+    return data[0]
 }
 
 async function getStateList(){
-    const response = await axios.get('https://covid-api.com/api/reports?iso=USA&date=2021-09-07'); 
-    return response.data.data;
+    const { data } = await axiosInstance.get('/reports?iso=USA&date=2021-09-07');  //When no date was added the API returned a CORS error
+    return sortStatesByName(data);
 }
+
+function sortStatesByName(data){
+    data.sort(function(a, b){
+        if(a.region.province < b.region.province) { return -1; }
+        if(a.region.province > b.region.province) { return 1; }
+        return 0;
+    })
+    return data;
+}
+
 
 export { getDataByState, getTotalUsaData, getTotalStateData, getStateList }

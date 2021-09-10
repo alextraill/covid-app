@@ -11,7 +11,7 @@ export function TimeFrame() {
 
     //Updates global state TimeFrame
     function handleTimeFrame(event) {
-        let updatedTimeFrame = {
+        const updatedTimeFrame = {
             text: event.target.value,
             amountDays: event.currentTarget.dataset.amount
         };

@@ -28,42 +28,39 @@ export function Chart() {
     async function fetchData() {
         setIsLoading(true);
         
-        let date = new Date();
+        const date = new Date();
         
         const dailyDataProms = [];
-            for (let i = 0; i < dateRange.amountDays; i++) {
-                date.setDate(date.getDate() - 1);
-                dailyDataProms.push(getDailyData(date));
-            }
-            const result = await Promise.all(dailyDataProms);
-            result.reverse()
+        for (let i = 0; i < dateRange.amountDays; i++) {
+            date.setDate(date.getDate() - 1);
+            dailyDataProms.push(getDailyData(date));
+        }
+        const dailyDataList = await Promise.all(dailyDataProms);
+        dailyDataList.reverse()
 
-            for (let i = 0; i < result.length; i++) {
-                const element = result[i];
-                if(element != null)
-                {
-                    dispatch(updateData({
-                        date:element.date,
-                        confirmed: element.confirmed,
-                        deaths: element.deaths
-                    }))
-                }
-               
-                
+        for (const dailyData of dailyDataList) {
+            if(dailyData != null){
+                dispatch(updateData({
+                    date:dailyData.date,
+                    confirmed: dailyData.confirmed,
+                    deaths: dailyData.deaths
+                }))
             }
-            setIsLoading(false);
+        }
+        setIsLoading(false);
     }
 
     async function getDailyData(date ){
         let data = null;
         try{
-            if(selectedState === "none" || selectedState === null){
+            if(selectedState === null){
                 data = getTotalUsaData(date)
             }else{
                 data = getTotalStateData(date, selectedState)
             }
         }catch(err){
-            console.error("Failing silently");
+            //In case the API fails. If one of the requests fails the promise all doesn't return anything.
+            console.error(`Failing silently for date: ${date}`);
         }
         return data;
     }
@@ -87,7 +84,7 @@ export function Chart() {
         plugins: {
             title: {
                 display: true,
-                text: `Covid data ${selectedState === "none" || selectedState === null ? "USA" : selectedState}`,
+                text: `Covid data ${selectedState === null ? "USA" : selectedState}`,
                 font: {
                     size: 25,
                     family:'roboto'
@@ -105,7 +102,7 @@ export function Chart() {
         },
         onClick: function(evt, element) {
             if(element.length > 0) {
-                let dateClicked = chartData.labels[element[0].index];
+                const dateClicked = chartData.labels[element[0].index];
                 dispatch(updateDate(dateClicked))
             }
         },

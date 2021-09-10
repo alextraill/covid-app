@@ -15,15 +15,10 @@ export function StatesDropdown() {
 
     //Retrieves list of states in alphabetical order and adds them to global state StateList
     async function fetchStates() {
-        let responseArray = await getStateList()
-        responseArray.sort(function(a, b){
-            if(a.region.province < b.region.province) { return -1; }
-            if(a.region.province > b.region.province) { return 1; }
-            return 0;
-        })
-        let statesList=[]
-        for (let i = 0; i < responseArray.length; i++) {
-            statesList.push(responseArray[i].region.province)
+        const statesData = await getStateList()
+        const statesList=[]
+        for (const stateData of statesData) {
+            statesList.push(stateData.region.province)
         }  
         dispatch(addToStatesList(statesList))
     }
